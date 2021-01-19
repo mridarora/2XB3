@@ -10,7 +10,7 @@ def are_valid_groups(student_numbers,groups):
 				dict[i] += 1	
 
 	for i in dict:
-		if dict[i] != 1
+		if dict[i] == 1
 			return False
 	return True
 		
