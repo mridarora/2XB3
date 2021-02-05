@@ -35,6 +35,7 @@ def find_min_index(L, n):
             mindex = i
     return mindex
 
+# Reference - https://www.geeksforgeeks.org/python-program-for-bubble-sort/
 def bubbleSort(L): 
     n = len(L) 
     for i in range(n-1): 
@@ -57,10 +58,22 @@ def create_near_sorted_list(n, factor):
         swap(L, r1, r2)
     return L
 
-def timetest(runs, n, f, factor):
+# For the tests in which we were supposed to use
+# factor, this timetest was used instead.
+def timetest3(runs, n, f, factor):
     total = 0
     for _ in range(runs):
         L = create_near_sorted_list(n, factor)
+        start = timeit.default_timer()
+        f(L)
+        end = timeit.default_timer()
+        total += end - start
+    return total/runs
+
+def timetest(runs, n, f):
+    total = 0
+    for _ in range(runs):
+        L = create_random_list(n)
         start = timeit.default_timer()
         f(L)
         end = timeit.default_timer()
@@ -140,10 +153,7 @@ def tri_pivot_quicksort(L):
     if (n < 2):
         return L
     elif (n == 2):
-        if(L[1] < L[0]):
-            return [L[1],L[0]]
-        else:
-            return [L[0],L[1]]
+        return quicksort_inplace(L)
 
     pivot1, pivot2, pivot3 = quicksort_inplace([L.pop(0), L.pop(0), L.pop(0)])
     for num in L:
@@ -164,27 +174,8 @@ def quad_pivot_quicksort(L):
     n = len(L)
     if (n < 2):
         return L
-    elif (n == 2):
-        if (L[1] < L[0]):
-            return [L[1],L[0]]
-        else:
-            return [L[0],L[1]]
-    elif (n == 3):
-        if (L[1] < L[0] and L[1] < L[2]):
-            if (L[0] < L[2]):
-                return [L[1],L[0],L[2]]
-            else:
-                return [L[1],L[2],L[0]]
-        elif (L[0] < L[1] and L[0] < L[2]):
-            if (L[1] < L[2]):
-                return [L[0],L[1],L[2]]
-            else:
-                return [L[0],L[2],L[1]]
-        else:
-            if (L[0] < L[1]):
-                return [L[2],L[0],L[1]]
-            else:
-                return [L[2],L[1],L[0]]
+    elif (n == 2 or n == 3):
+        return quicksort_inplace(L)
 
     pivot1, pivot2, pivot3, pivot4 = quicksort_inplace([L.pop(0), L.pop(0), L.pop(0), L.pop(0)])
     for num in L:
@@ -201,7 +192,32 @@ def quad_pivot_quicksort(L):
 
     return quad_pivot_quicksort(list1)+[pivot1]+quad_pivot_quicksort(list2)+[pivot2]+quad_pivot_quicksort(list3)+[pivot3]+quad_pivot_quicksort(list4)+[pivot4]+quad_pivot_quicksort(list5)
 
-# print(bubbleSort([3,6,2,9,0,-1,-5,-3,99,-99]))
+def final_sort(L):
+    if len(L) < 2:
+        return L
+    elif len(L) < 11:
+        return insertion_sort(L)
+    list1, list2, list3, list4, list5 = [], [], [], [], []
+    pivot1, pivot2, pivot3, pivot4 = quicksort_inplace([L.pop(0), L.pop(0), L.pop(0), L.pop(0)])
+    for num in L:
+        if (num < pivot1):
+            list1.append(num)
+        elif (pivot1 <= num < pivot2):
+            list2.append(num)
+        elif (pivot2 <= num < pivot3):
+            list3.append(num)
+        elif (pivot3 <= num < pivot4):
+            list4.append(num)
+        else:
+            list5.append(num)
+
+    return final_sort(list1)+[pivot1]+final_sort(list2)+[pivot2]+final_sort(list3)+[pivot3]+final_sort(list4)+[pivot4]+final_sort(list5)
+    
+
+# print(final_sort([3,6,2,9,0,-1,-5,-3,99,-99,5555,121]))
+
+# for i in range(1,1001):
+#     print(i, timetest3(20, i, quad_pivot_quicksort, 0.1), timetest3(20, i, insertion_sort, 0.1))
 
 for i in range(1,1001):
-    print(i, timetest(20, i, bubbleSort, 0.032), timetest(20, i, selection_sort, 0.032), timetest(20, i, insertion_sort, 0.032), timetest(20, i, quad_pivot_quicksort, 0.032))
+    print(i, timetest(20, i, quad_pivot_quicksort), timetest(20, i, final_sort))
