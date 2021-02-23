@@ -13,7 +13,8 @@ class Heap:
         for i in range(self.length // 2 - 1, -1, -1):
             self.sink(i)
             
-
+    def build_heap2(self):
+        return 0
 
     def sink(self, i):
         largest_known = i
