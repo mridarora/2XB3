@@ -1,4 +1,5 @@
 import math
+import random
 
 class Heap:
     length = 0
@@ -7,14 +8,23 @@ class Heap:
     def __init__(self, L):
         self.data = L
         self.length = len(L)
-        self.build_heap1()
 
-    def build_heap1(self):
+    def build_heap_1(self):
         for i in range(self.length // 2 - 1, -1, -1):
             self.sink(i)
             
-    def build_heap2(self):
-        return 0
+    def build_heap_2(self):
+        temp = Heap([])
+        for i in self.data:
+            temp.insert(i)
+        self.data = temp.data
+
+    def build_heap_3(self):
+        if (self.is_heap()):
+            return
+        for i in range(self.length):
+            self.sink(i)
+        self.build_heap_3()
 
     def sink(self, i):
         largest_known = i
@@ -49,6 +59,14 @@ class Heap:
         self.length -= 1
         self.sink(0)
         return max_value
+
+    def is_heap(self):
+        for i in range(((self.length - 2) // 2) + 1):
+            if self.data[2 * i + 1] > self.data[i]: 
+                return False
+            if (2 * i + 2 < self.length and self.data[2 * i + 2] > self.data[i]): 
+                return False
+        return True
         
     def left(self, i):
         return 2 * (i + 1) - 1
@@ -71,6 +89,3 @@ class Heap:
             whitespace = whitespace // 2
         return s
 
-h = Heap([4,6,3,1,0,7,8])
-h.build_heap1()
-print(h)
