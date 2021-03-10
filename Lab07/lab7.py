@@ -43,23 +43,6 @@ def BFS(G, node1, node2):
                 marked[node] = True
     return False
 
-
-#Depth First Search
-def DFS(G, node1, node2):
-    S = [node1]
-    marked = {}
-    for node in G.adj:
-        marked[node] = False
-    while len(S) != 0:
-        current_node = S.pop()
-        if not marked[current_node]:
-            marked[current_node] = True
-            for node in G.adj[current_node]:
-                if node == node2:
-                    return True
-                S.append(node)
-    return False
-
 def BFS2(G, node1, node2): 
     Q = [[node1]] 
     t = []
@@ -79,16 +62,27 @@ def BFS2(G, node1, node2):
             t.append(marked) 
     return []
 
-def DFS2(graph, start, goal):
-    stack = [(start, [start])]
-    while stack:
-        (vertex, path) = stack.pop()
-        for next in graph[vertex] - set(path):
-            if next == goal:
-                yield path + [next]
-            else:
-                stack.append((next, path + [next]))
-    return list(stack)
+#Depth First Search
+def DFS(G, node1, node2):
+    S = [node1]
+    marked = {}
+    for node in G.adj:
+        marked[node] = False
+    while len(S) != 0:
+        current_node = S.pop()
+        if not marked[current_node]:
+            marked[current_node] = True
+            for node in G.adj[current_node]:
+                if node == node2:
+                    return True
+                S.append(node)
+    return False
+
+
+def DFS2(graph, node1, node2):
+    Q = [[node1]]
+    marked = {}
+    
 
 def BFS3(graph, start):
     visited, queue = set(), [start]
@@ -99,9 +93,38 @@ def BFS3(graph, start):
             queue.extend(graph[vertex] - visited)
     return visited
 
+# def DFS3(graph,start,visited=None):
+
+    # where_to_go_next = deque()
+    # where_to_go_next.append(origin)
+    # already_visited = []
+
+    # while len(where_to_go_next) != 0:
+    #     current_node = where_to_go_next.pop()
+    #     print(current_node)
+    #     already_visited.append(current_node)
+    #     neighbours = graph[current_node]
+    #     for neighbour in neighbours:
+    #         if neighbour not in already_visited:
+    #             where_to_go_next.append(neighbour)
+
+    # if source is None or source not in graph.adj:
+    #        return "Invalid input"
+    # path = []
+    # stack = [source]
+    # while(len(stack) != 0):
+    #     s = stack.pop()
+    #     if s not in path:
+    #         path.append(s)
+    #     # if s not in graph.adj:
+    #     #     continue
+    #     for neighbor in graph.adj[s]:
+    #         stack.append(neighbor)
+    # return " ".join(path)
+
 graph = Graph(7)
-graph.add_edge(1, 3) 
 graph.add_edge(1, 2) 
+graph.add_edge(1, 3) 
 graph.add_edge(2, 4) 
 graph.add_edge(4, 6) 
 graph.add_edge(4, 3) 
@@ -113,4 +136,4 @@ graph.add_edge(3, 5)
 # G.add_node(4)
 # G.add_node(5)
 # G.add_node(6)
-print(BFS3(graph,3))
+print(BFS2(graph,1,3))
