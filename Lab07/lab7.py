@@ -22,8 +22,8 @@ class Graph:
             self.adj[node1].append(node2)
             self.adj[node2].append(node1)
 
-    def number_of_nodes():
-        return len()
+    def number_of_nodes(self):
+        return len(self.adj)
 
 
 #Breadth First Search
@@ -34,6 +34,7 @@ def BFS(G, node1, node2):
         if node != node1:
             marked[node] = False
     while len(Q) != 0:
+        print(Q)
         current_node = Q.popleft()
         for node in G.adj[current_node]:
             if node == node2:
@@ -49,6 +50,7 @@ def BFS2(G, node1, node2):
     if node1 == node2:  
         return [node1]
     while len(Q) != 0: 
+        print(Q)
         p = Q.pop(0) 
         marked = p[-1] 
         if marked not in t: 
@@ -60,6 +62,21 @@ def BFS2(G, node1, node2):
                 if n == node2: 
                     return ans
             t.append(marked) 
+    return []
+
+def BFS3(graph, root):
+    visited = set()
+    Q = deque([root])
+    visited.add(root)
+    while Q:
+        vertex = Q.popleft()
+        print(vertex)
+        # print(str(vertex) + " ", end="")
+        for neighbour in graph.adj[vertex]:
+            if neighbour not in visited:
+                visited.add(neighbour)
+                Q.append(neighbour)
+                return list(Q)
     return []
 
 #Depth First Search
@@ -84,14 +101,14 @@ def DFS2(graph, node1, node2):
     marked = {}
     
 
-def BFS3(graph, start):
-    visited, queue = set(), [start]
-    while queue:
-        vertex = queue.pop(0)
-        if vertex not in visited:
-            visited.add(vertex)
-            queue.extend(graph[vertex] - visited)
-    return visited
+# def BFS3(graph, start):
+#     visited, queue = set(), [start]
+#     while queue:
+#         vertex = queue.pop(0)
+#         if vertex not in visited:
+#             visited.add(vertex)
+#             queue.extend(graph[vertex] - visited)
+#     return visited
 
 # def DFS3(graph,start,visited=None):
 
@@ -122,18 +139,37 @@ def BFS3(graph, start):
     #         stack.append(neighbor)
     # return " ".join(path)
 
+def isCyclicUtil(G,v,visited,parent): 
+    visited[v]= True
+    for i in G.adj[v]: 
+        if visited[i]==False :  
+            if(isCyclicUtil(G,i,visited,v)): 
+                return True
+        elif parent!=i: 
+            return True
+    return False
+           
+def isCyclic(G): 
+    visited =[False]*(G.number_of_nodes())
+    for i in range(G.number_of_nodes()):
+        if visited[i] ==False:  
+            if(isCyclicUtil(G,i,visited,-1)) == True: 
+                return True
+    return False
+
+def is_connected(G):
+    for i in G.adj:
+        for j in G.adj:
+            if not DFS(G,i,j):
+                return False
+    return True
+
 graph = Graph(7)
-graph.add_edge(1, 2) 
-graph.add_edge(1, 3) 
-graph.add_edge(2, 4) 
-graph.add_edge(4, 6) 
-graph.add_edge(4, 3) 
-graph.add_edge(4, 5)
-graph.add_edge(3, 5) 
-# G.add_node(1)
-# G.add_node(2)
-# G.add_node(3)
-# G.add_node(4)
-# G.add_node(5)
-# G.add_node(6)
-print(BFS2(graph,1,3))
+graph.add_edge(1,4) 
+graph.add_edge(4,5) 
+graph.add_edge(4,2) 
+graph.add_edge(4,3) 
+# graph.add_edge(4,2)
+graph.add_edge(5,6)   
+print(graph.adj)
+print(is_connected(graph))
