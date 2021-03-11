@@ -34,7 +34,6 @@ def BFS(G, node1, node2):
         if node != node1:
             marked[node] = False
     while len(Q) != 0:
-        print(Q)
         current_node = Q.popleft()
         for node in G.adj[current_node]:
             if node == node2:
@@ -49,8 +48,7 @@ def BFS2(G, node1, node2):
     t = []
     if node1 == node2:  
         return [node1]
-    while len(Q) != 0: 
-        print(Q)
+    while len(Q) != 0:
         p = Q.pop(0) 
         marked = p[-1] 
         if marked not in t: 
@@ -165,11 +163,11 @@ def is_connected(G):
     return True
 
 graph = Graph(7)
-graph.add_edge(1,4) 
-graph.add_edge(4,5) 
-graph.add_edge(4,2) 
-graph.add_edge(4,3) 
-# graph.add_edge(4,2)
-graph.add_edge(5,6)   
+graph.add_edge(1,2) 
+graph.add_edge(2,4) 
+graph.add_edge(1,3) 
+graph.add_edge(3,4) 
+graph.add_edge(3,5) 
+graph.add_edge(4,5)
+graph.add_edge(4,6)   
 print(graph.adj)
-print(is_connected(graph))
