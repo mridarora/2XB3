@@ -134,14 +134,12 @@ def is_connected(G):
                 return False
     return True
 
-
 def test(k, c, f):
     temp = 0
-    for j in range(k,1000,100):
+    for j in range(k,2100,100):
         if(create_random_graph(j,c,f)):
-            temp++
-    return temp/9
-
+            temp += 1
+    return temp/20
 
 def create_random_graph(k,c,f):
     graph = Graph(k)
