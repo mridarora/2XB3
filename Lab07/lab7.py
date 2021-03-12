@@ -1,4 +1,5 @@
 from collections import deque
+import random
 
 #Undirected graph using an adjacency list
 class Graph:
@@ -51,9 +52,8 @@ def BFS2(G, node1, node2):
     while len(Q) != 0:
         p = Q.pop(0) 
         marked = p[-1] 
-        if marked not in t: 
-            neighbour = G.adjacent_nodes(marked)
-            for n in neighbour: 
+        if marked not in t:
+            for n in G.adjacent_nodes(marked): 
                 ans = list(p) 
                 ans.append(n) 
                 Q.append(ans) 
@@ -62,22 +62,20 @@ def BFS2(G, node1, node2):
             t.append(marked) 
     return []
 
-def BFS3(graph, root):
+def BFS3(graph, node):
     visited = set()
-    Q = deque([root])
-    visited.add(root)
-    while Q:
-        vertex = Q.popleft()
-        print(vertex)
-        # print(str(vertex) + " ", end="")
-        for neighbour in graph.adj[vertex]:
+    Q = deque([node])
+    visited.add(node)
+    ans = {}
+    while len(Q) != 0:
+        current_node = Q.popleft()
+        for neighbour in graph.adj[current_node]:
             if neighbour not in visited:
                 visited.add(neighbour)
                 Q.append(neighbour)
-                return list(Q)
-    return []
+                ans[neighbour] = current_node
+    return ans
 
-#Depth First Search
 def DFS(G, node1, node2):
     S = [node1]
     marked = {}
@@ -93,66 +91,40 @@ def DFS(G, node1, node2):
                 S.append(node)
     return False
 
-
-def DFS2(graph, node1, node2):
-    Q = [[node1]]
+def DFS2(G, node1, node2):
+    S = [node1]
     marked = {}
-    
-
-# def BFS3(graph, start):
-#     visited, queue = set(), [start]
-#     while queue:
-#         vertex = queue.pop(0)
-#         if vertex not in visited:
-#             visited.add(vertex)
-#             queue.extend(graph[vertex] - visited)
-#     return visited
-
-# def DFS3(graph,start,visited=None):
-
-    # where_to_go_next = deque()
-    # where_to_go_next.append(origin)
-    # already_visited = []
-
-    # while len(where_to_go_next) != 0:
-    #     current_node = where_to_go_next.pop()
-    #     print(current_node)
-    #     already_visited.append(current_node)
-    #     neighbours = graph[current_node]
-    #     for neighbour in neighbours:
-    #         if neighbour not in already_visited:
-    #             where_to_go_next.append(neighbour)
-
-    # if source is None or source not in graph.adj:
-    #        return "Invalid input"
-    # path = []
-    # stack = [source]
-    # while(len(stack) != 0):
-    #     s = stack.pop()
-    #     if s not in path:
-    #         path.append(s)
-    #     # if s not in graph.adj:
-    #     #     continue
-    #     for neighbor in graph.adj[s]:
-    #         stack.append(neighbor)
-    # return " ".join(path)
-
-def isCyclicUtil(G,v,visited,parent): 
-    visited[v]= True
-    for i in G.adj[v]: 
-        if visited[i]==False :  
-            if(isCyclicUtil(G,i,visited,v)): 
-                return True
-        elif parent!=i: 
-            return True
-    return False
+    ans = []
+    for node in G.adj:
+        marked[node] = False
+    while len(S) != 0:
+        current_node = S.pop()
+        ans.append(current_node)
+        if not marked[current_node]:
+            marked[current_node] = True
+            for node in G.adj[current_node]:
+                if node == node2:
+                    ans.append(node)
+                    return ans
+                S.append(node)
+    return []
            
-def isCyclic(G): 
-    visited =[False]*(G.number_of_nodes())
-    for i in range(G.number_of_nodes()):
-        if visited[i] ==False:  
-            if(isCyclicUtil(G,i,visited,-1)) == True: 
+def has_cycle(G): 
+    marked =[False]*(G.number_of_nodes())
+    for j in range(G.number_of_nodes()):
+        if marked[j] == False:  
+            if(has_cycle_helper(G,j,marked,-1)) == True: 
                 return True
+    return False
+
+def has_cycle_helper(G,n,marked,node): 
+    marked[n]= True
+    for j in G.adj[n]: 
+        if marked[j] == False :  
+            if(has_cycle_helper(G,j,marked,n)): 
+                return True
+        elif node != j: 
+            return True
     return False
 
 def is_connected(G):
@@ -162,12 +134,52 @@ def is_connected(G):
                 return False
     return True
 
-graph = Graph(7)
-graph.add_edge(1,2) 
-graph.add_edge(2,4) 
-graph.add_edge(1,3) 
-graph.add_edge(3,4) 
-graph.add_edge(3,5) 
-graph.add_edge(4,5)
-graph.add_edge(4,6)   
-print(graph.adj)
+
+def test(k, c, f):
+    temp = 0
+    for j in range(k,1000,100):
+        if(create_random_graph(j,c,f)):
+            temp++
+    return temp/9
+
+
+def create_random_graph(k,c,f):
+    graph = Graph(k)
+    for _ in range(c):
+        graph.add_edge(random.randrange(0, k),random.randrange(0, k))
+    return f(graph)
+
+for i in range(0,100):
+    print(i,test(100,i,has_cycle))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# graph = Graph(7)
+
+# graph.add_edge(1,2) 
+# graph.add_edge(2,4) 
+# graph.add_edge(1,3) 
+# graph.add_edge(3,4) 
+# graph.add_edge(3,5) 
+# graph.add_edge(4,5)
+# graph.add_edge(4,6)   
+
+# # print(graph.adj)
+# print(has_cycle(graph))
