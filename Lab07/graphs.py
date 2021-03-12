@@ -1,4 +1,4 @@
-# Implemented number_of_nodes method of Graph class correctly
+# Corrected number_of_nodes method of Graph class correctly
 # def number_of_nodes(self):
 #         return len(self.adj)
 
@@ -51,6 +51,25 @@ def BFS3(graph, node):
                 Q.append(neighbour)
                 ans[neighbour] = current_node
     return ans
+
+def DFS3(G, node1):
+    S = [node1]
+    marked = {}
+    ans = []
+    t = {}
+    for node in G.adj:
+        marked[node] = False
+    while len(S) != 0:
+        current_node = S.pop()
+        ans.append(current_node)
+        if not marked[current_node]:
+            marked[current_node] = True
+            for node in G.adj[current_node]:
+                ans.append(node)
+                if not marked[node]:
+                    t[node] = current_node
+                S.append(node)
+    return t
            
 def has_cycle(G): 
     marked =[False]*(G.number_of_nodes())
