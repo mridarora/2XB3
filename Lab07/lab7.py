@@ -58,7 +58,7 @@ def BFS2(G, node1, node2):
                 ans.append(n) 
                 Q.append(ans) 
                 if n == node2: 
-                    return ans
+                    return ans,t
             t.append(marked) 
     return []
 
@@ -108,7 +108,26 @@ def DFS2(G, node1, node2):
                     return ans
                 S.append(node)
     return []
-           
+
+def DFS3(G, node1):
+    S = [node1]
+    marked = {}
+    ans = []
+    t = {}
+    for node in G.adj:
+        marked[node] = False
+    while len(S) != 0:
+        current_node = S.pop()
+        ans.append(current_node)
+        if not marked[current_node]:
+            marked[current_node] = True
+            for node in G.adj[current_node]:
+                ans.append(node)
+                if not marked[node]:
+                    t[node] = current_node
+                S.append(node)
+    return t
+        
 def has_cycle(G): 
     marked =[False]*(G.number_of_nodes())
     for j in range(G.number_of_nodes()):
@@ -134,50 +153,16 @@ def is_connected(G):
                 return False
     return True
 
-def test(k, c, f):
-    temp = 0
-    for j in range(k,2100,100):
-        if(create_random_graph(j,c,f)):
-            temp += 1
-    return temp/20
+graph = Graph(7)
 
-def create_random_graph(k,c,f):
-    graph = Graph(k)
-    for _ in range(c):
-        graph.add_edge(random.randrange(0, k),random.randrange(0, k))
-    return f(graph)
+graph.add_edge(1,2) 
+graph.add_edge(1,3)
+graph.add_edge(2,4) 
+graph.add_edge(3,4) 
+graph.add_edge(3,5) 
+graph.add_edge(4,5)
+graph.add_edge(4,6)  
 
-for i in range(0,100):
-    print(i,test(100,i,has_cycle))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# graph = Graph(7)
-
-# graph.add_edge(1,2) 
-# graph.add_edge(2,4) 
-# graph.add_edge(1,3) 
-# graph.add_edge(3,4) 
-# graph.add_edge(3,5) 
-# graph.add_edge(4,5)
-# graph.add_edge(4,6)   
-
-# # print(graph.adj)
-# print(has_cycle(graph))
+print(DFS3(graph,1))
+# {2:4,3:1,4:5,5:3,6:4}
+# {2:1,3:1,4:3,5:3,6:4}
