@@ -105,8 +105,3 @@ class Element:
 
     def __str__(self):
         return "(" + str(self.value) + "," + str(self.key) + ")"
-
-
-
-
-
