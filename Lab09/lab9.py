@@ -1,5 +1,6 @@
 import min_heap
 import random
+import timeit
 
 class DirectedWeightedGraph:
 
@@ -76,6 +77,50 @@ def bellman_ford(G, source):
                     pred[neighbour] = node
     return dist
 
+# def bellman_ford_approx(G, source, k):
+#     pred = {} #Predecessor dictionary. Isn't returned, but here for your understanding
+#     dist = {} #Distance dictionary
+#     nodes = list(G.adj.keys())
+#     temp = {}
+#     for node in nodes:
+#         temp[node] = 0
+
+#     #Initialize distances
+#     for node in nodes:
+#         dist[node] = 99999
+#     dist[source] = 0
+
+#     #Meat of the algorithm
+#     for _ in range(G.number_of_nodes()):
+#         for node in nodes:
+#             for neighbour in G.adj[node]:
+#                 if dist[neighbour] > dist[node] + G.w(node, neighbour):
+#                     if(temp[neighbour] <= k):
+#                         dist[neighbour] = dist[node] + G.w(node, neighbour)
+#                         temp[neighbour] = temp[neighbour] + 1
+#                         pred[neighbour] = node
+#     return dist
+
+def bellman_ford_approx(G, source, k):
+    pred = {} #Predecessor dictionary. Isn't returned, but here for your understanding
+    dist = {} #Distance dictionary
+    nodes = list(G.adj.keys())
+    temp = {}
+    for node in nodes:
+        dist[node] = 99999
+        temp[node] = 0
+    dist[source] = 0
+
+    #Meat of the algorithm
+    for _ in range(G.number_of_nodes()):
+        for node in nodes:
+            for neighbour in G.adj[node]:
+                if dist[neighbour] > dist[node] + G.w(node, neighbour):
+                    if(temp[node] <= k):
+                        dist[neighbour] = dist[node] + G.w(node, neighbour)
+                        temp[node] += 1
+                        pred[neighbour] = node
+    return dist
 
 def total_dist(dist):
     total = 0
@@ -114,3 +159,56 @@ def init_d(G):
                 d[i][j] = G.w(i,j)
         d[i][i] = 0
     return d
+
+
+# g = DirectedWeightedGraph()
+# g.add_node(0)
+# g.add_node(1)
+# g.add_node(2)
+# g.add_node(3)
+# g.add_node(4)
+# g.add_node(5)
+# g.add_edge(0, 1, -1)
+# g.add_edge(0, 2, 4)
+# g.add_edge(1, 2, 3)
+# g.add_edge(1, 3, 2)
+# g.add_edge(1, 4, 2)
+# g.add_edge(3, 2, 5)
+# g.add_edge(3, 1, 1)
+# g.add_edge(4, 3, -3)
+
+# print(bellman_ford(g, 0))
+# print(bellman_ford_approx(g, 0, 2))
+# print(bellman_ford_approx(g, 0, 3))
+
+
+# edges = [
+#         (0, 1, -1), (0, 2, 4), (1, 2, 3), (1, 3, 2),
+#         (1, 4, 2), (3, 2, 5), (3, 1, 1), (4, 3, -3)
+#     ]
+
+# print(bellman_ford(g,0))
+# print(bellman_ford_approx(g,0,4))
+
+def test1(r, n, f):
+    graph = create_random_complete_graph(n,1000)
+    interval = 0
+    for _ in range(r):
+        start = timeit.default_timer()
+        f(graph,random.randint(1,n+1))
+        end = timeit.default_timer()
+        interval += (end - start)
+    return interval/5
+
+def test2(r, n, k, f):
+    graph = create_random_complete_graph(n,1000)
+    interval = 0
+    for _ in range(r):
+        start = timeit.default_timer()
+        f(graph,random.randint(1,n+1),k)
+        end = timeit.default_timer()
+        interval += (end - start)
+    return interval/5
+
+for i in range(1,100):
+    print(i,test1(5,100,bellman_ford),test2(5,100,i,bellman_ford_approx))
