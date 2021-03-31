@@ -77,30 +77,6 @@ def bellman_ford(G, source):
                     pred[neighbour] = node
     return dist
 
-# def bellman_ford_approx(G, source, k):
-#     pred = {} #Predecessor dictionary. Isn't returned, but here for your understanding
-#     dist = {} #Distance dictionary
-#     nodes = list(G.adj.keys())
-#     temp = {}
-#     for node in nodes:
-#         temp[node] = 0
-
-#     #Initialize distances
-#     for node in nodes:
-#         dist[node] = 99999
-#     dist[source] = 0
-
-#     #Meat of the algorithm
-#     for _ in range(G.number_of_nodes()):
-#         for node in nodes:
-#             for neighbour in G.adj[node]:
-#                 if dist[neighbour] > dist[node] + G.w(node, neighbour):
-#                     if(temp[neighbour] <= k):
-#                         dist[neighbour] = dist[node] + G.w(node, neighbour)
-#                         temp[neighbour] = temp[neighbour] + 1
-#                         pred[neighbour] = node
-#     return dist
-
 def bellman_ford_approx(G, source, k):
     pred = {} #Predecessor dictionary. Isn't returned, but here for your understanding
     dist = {} #Distance dictionary
@@ -160,6 +136,33 @@ def init_d(G):
         d[i][i] = 0
     return d
 
+def all_pairs_dijkstra(G):
+    r, c = (G.number_of_nodes(), G.number_of_nodes())
+    n = G.number_of_nodes()
+    g = [[999999 for i in range(c)] for j in range(r)]
+    for i in range(len(g)):
+        for j in range(len(g[i])):
+            g[i][j] = G.w(i,j)
+    distance = list(map(lambda a: list(map(lambda b: b, a)), g))
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                dist[j][k] = min(dist[j][k],dist[j][i] + dist[i][k])
+    return distance
+
+# g = DirectedWeightedGraph()
+# g.add_node(0)
+# g.add_node(1)
+# g.add_node(2)
+# g.add_node(3)
+# g.add_node(4)
+# g.add_edge(0, 3, 1)
+# g.add_edge(2, 4, 4)
+# g.add_edge(0, 1, 5)
+# g.add_edge(1, 2, 3)
+# g.add_edge(2, 3, 2)
+# print(mystery(g))
+
 
 # g = DirectedWeightedGraph()
 # g.add_node(0)
@@ -182,33 +185,19 @@ def init_d(G):
 # print(bellman_ford_approx(g, 0, 3))
 
 
-# edges = [
-#         (0, 1, -1), (0, 2, 4), (1, 2, 3), (1, 3, 2),
-#         (1, 4, 2), (3, 2, 5), (3, 1, 1), (4, 3, -3)
-#     ]
+# def test1(r, n, f):
+#     graph = create_random_complete_graph(n,1000)
+#     interval = 0
+#     for _ in range(r):
+#         start = timeit.default_timer()
+#         f(graph)
+#         end = timeit.default_timer()
+#         interval += (end - start)
+#     return interval/r
 
-# print(bellman_ford(g,0))
-# print(bellman_ford_approx(g,0,4))
+# def test2(n, k, f):
+#     graph = create_random_complete_graph(n,1000)
+#     return total_dist(f(graph,random.randint(1,n+1),k))
 
-def test1(r, n, f):
-    graph = create_random_complete_graph(n,1000)
-    interval = 0
-    for _ in range(r):
-        start = timeit.default_timer()
-        f(graph,random.randint(1,n+1))
-        end = timeit.default_timer()
-        interval += (end - start)
-    return interval/5
-
-def test2(r, n, k, f):
-    graph = create_random_complete_graph(n,1000)
-    interval = 0
-    for _ in range(r):
-        start = timeit.default_timer()
-        f(graph,random.randint(1,n+1),k)
-        end = timeit.default_timer()
-        interval += (end - start)
-    return interval/5
-
-for i in range(1,100):
-    print(i,test1(5,100,bellman_ford),test2(5,100,i,bellman_ford_approx))
+# for i in range(1,100):
+#     print(i,test1(10,i,mystery))

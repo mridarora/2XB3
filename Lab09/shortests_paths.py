@@ -18,3 +18,17 @@ def bellman_ford_approx(G, source, k):
                         temp[node] += 1
                         pred[neighbour] = node
     return dist
+
+def all_pairs_dijkstra(G):
+    r, c = (G.number_of_nodes(), G.number_of_nodes())
+    n = G.number_of_nodes()
+    g = [[999999 for i in range(c)] for j in range(r)]
+    for i in range(len(g)):
+        for j in range(len(g[i])):
+            g[i][j] = G.w(i,j)
+    distance = list(map(lambda a: list(map(lambda b: b, a)), g))
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                dist[j][k] = min(dist[j][k],dist[j][i] + dist[i][k])
+    return distance
